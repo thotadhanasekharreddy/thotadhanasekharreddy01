@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money You Need</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 900px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .form-section {
+            border-right: 1px solid #ddd;
+            padding-right: 20px;
+        }
+
+        .result-box {
+            background-color: #e9f7ef;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .result-box h5 {
+            color: #28a745;
+        }
+
+        .results {
+            text-align: left;
+            font-size: 1.1rem;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Card 1 -->
+        <div class="card">
+            <section>
+                <div class="card-header">Crypto Profit Calculator</div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-md-6 form-section">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="investedAmount" class="form-label">Invested Amount (₹)</label>
+                                    <input type="number" class="form-control" id="investedAmount"
+                                        placeholder="Enter invested amount" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="initialPrice" class="form-label">Initial Crypto Price (₹)</label>
+                                    <input type="number" class="form-control" id="initialPrice"
+                                        placeholder="Enter initial crypto price" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sellingPrice" class="form-label">Selling Crypto Price (₹)</label>
+                                    <input type="number" class="form-control" id="sellingPrice"
+                                        placeholder="Enter selling crypto price" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="investmentFee" class="form-label">Investment Fee (%)</label>
+                                    <input type="number" class="form-control" id="investmentFee"
+                                        placeholder="Enter investment fee percentage" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exitFee" class="form-label">Exit Fee (%)</label>
+                                    <input type="number" class="form-control" id="exitFee"
+                                        placeholder="Enter exit fee percentage" required>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100"
+                                    onclick="calculateProfit()">Calculate</button>
+                            </form>
+                        </div>
+                        <!-- Results -->
+                        <div class="col-md-6">
+                            <div id="profitResults" class="result-box d-none">
+                                <h5>Total Profit:</h5>
+                                <p class="results" id="totalProfit"></p>
+                                <h5>Total Investment Fee:</h5>
+                                <p class="results" id="investmentFeeValue"></p>
+                                <h5>Total Exit Fee:</h5>
+                                <p class="results" id="exitFeeValue"></p>
+                                <h5>Percentage Growth:</h5>
+                                <p class="results" id="percentageGrowth"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card mt-4">
+            <section>
+                <div class="card-header">Investment You Need</div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-md-6 form-section">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="CriptoPrice" class="form-label">Present Crypto Price (₹)</label>
+                                    <input type="number" class="form-control" id="CriptoPrice"
+                                        placeholder="Enter present crypto price" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="CoinsNeed" class="form-label">Coins You Need</label>
+                                    <input type="number" class="form-control" id="CoinsNeed"
+                                        placeholder="Enter coins you need" required>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100"
+                                    onclick="calculateInvestment()">Calculate</button>
+                            </form>
+                        </div>
+                        <!-- Results -->
+                        <div class="col-md-6">
+                            <div id="investmentResults" class="result-box d-none">
+                                <h5>Investment You Need:</h5>
+                                <p class="results" id="InvestmentValue"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card mt-4">
+            <section>
+                <div class="card-header">Coins You Get</div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-md-6 form-section">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="CoinPrice" class="form-label">Coin Price (₹)</label>
+                                    <input type="number" class="form-control" id="CoinPrice"
+                                        placeholder="Enter coin price" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="InvestementAmount" class="form-label">Investment Amount (₹)</label>
+                                    <input type="number" class="form-control" id="InvestementAmount"
+                                        placeholder="Enter investment amount" required>
+                                </div>
+                                <button type="button" class="btn btn-primary w-100"
+                                    onclick="coinsYouGet()">Calculate</button>
+                            </form>
+                        </div>
+                        <!-- Results -->
+                        <div class="col-md-6">
+                            <div id="coinsResults" class="result-box d-none">
+                                <h5>Coins You Get:</h5>
+                                <p class="results" id="CoinsYouGet"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <br><br>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function calculateProfit() {
+            const investedAmount = parseFloat(document.getElementById('investedAmount').value);
+            const initialPrice = parseFloat(document.getElementById('initialPrice').value);
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+            const investmentFeePercentage = parseFloat(document.getElementById('investmentFee').value);
+            const exitFeePercentage = parseFloat(document.getElementById('exitFee').value);
+
+            if (isNaN(investedAmount) || isNaN(initialPrice) || isNaN(sellingPrice) || isNaN(investmentFeePercentage) || isNaN(exitFeePercentage)) {
+                alert('Please enter valid numbers.');
+                return;
+            }
+
+            const investmentFee = (investmentFeePercentage / 100) * investedAmount;
+            const totalCrypto = (investedAmount - investmentFee) / initialPrice;
+            const totalValue = totalCrypto * sellingPrice;
+            const exitFee = (exitFeePercentage / 100) * totalValue;
+            const netProfit = totalValue - investedAmount - exitFee;
+            const growth = ((sellingPrice - initialPrice) / initialPrice) * 100;
+
+            document.getElementById('totalProfit').innerText = netProfit.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+            document.getElementById('investmentFeeValue').innerText = investmentFee.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+            document.getElementById('exitFeeValue').innerText = exitFee.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+            document.getElementById('percentageGrowth').innerText = `${growth.toFixed(2)}%`;
+
+            document.getElementById('profitResults').classList.remove('d-none');
+        }
+
+        function calculateInvestment() {
+            const CriptoPrice = parseFloat(document.getElementById('CriptoPrice').value);
+            const CoinsNeed = parseFloat(document.getElementById('CoinsNeed').value);
+
+            if (isNaN(CriptoPrice) || isNaN(CoinsNeed)) {
+                alert('Please enter valid numbers.');
+                return;
+            }
+
+            const totalInvestment = CriptoPrice * CoinsNeed;
+            document.getElementById('InvestmentValue').innerText = totalInvestment.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+
+            document.getElementById('investmentResults').classList.remove('d-none');
+        }
+
+        function coinsYouGet() {
+            const CoinPrice = parseFloat(document.getElementById('CoinPrice').value);
+            const InvestementAmount = parseFloat(document.getElementById('InvestementAmount').value);
+
+            if (isNaN(CoinPrice) || isNaN(InvestementAmount)) {
+                alert('Please enter valid numbers.');
+                return;
+            }
+
+            const totalCoins = InvestementAmount / CoinPrice;
+            document.getElementById('CoinsYouGet').innerText = totalCoins.toFixed(4);
+
+            document.getElementById('coinsResults').classList.remove('d-none');
+        }
+    </script>
+</body>
+
+</html>
