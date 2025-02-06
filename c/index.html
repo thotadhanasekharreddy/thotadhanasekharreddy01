@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <link rel="shortcut icon" href="images/LOGO.png" type="logo">
+  <title>Learnit.today</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!---bootstrap--->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!---FOR USING jquery--->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <!-- font-styles -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+
+  <!-------------style file--------------------->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+  <section id="navigation_bar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="images/LOGO.png" alt="tds" style="width:40px;" class="rounded-pill">
+          <b>&#160; Datasciencepro.in</b>
+        </a>
+        
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="toggler-icon top-bar"></span>
+          <span  class="toggler-icon middle-bar"></span>
+          <span class="toggler-icon bottom-bar"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+          <ul class="navbar-nav  mb-2 mb-lg-0" id="navlist">
+            <li class="nav-item" data-bs-toggle="collapse"><a class="nav-link" onclick="Home_Body()"> <b class="nav_name">&#160;&#160;<i class="fas fa-home"></i> HOME&#160;&#160;</b></a></li>
+            <li class="nav-item" data-bs-toggle="collapse" ><a class="nav-link" onclick="JOBS()"> <b class="nav_name">&#160;&#160;<i class="fas fa-cogs"></i> Services&#160;&#160;</b></a></li>
+            <li class="nav-item" data-bs-toggle="collapse" ><a class="nav-link" onclick="INTERVIEW()"> <b class="nav_name">&#160;&#160;<i class="fas fa-blog"></i> Blog&#160;&#160;</b></a></li>
+            <li class="nav-item" data-bs-toggle="collapse" ><a class="nav-link" onclick="learning()"> <b class="nav_name">&#160;&#160;<i class="fas fa-graduation-cap"></i> LEARN&#160;&#160;</b></a></li>
+            <li class="nav-item" data-bs-toggle="collapse" ><a class="nav-link" onclick="BOOKS()"> <b class="nav_name">&#160;&#160;<i class="fas fa-info-circle"></i> About Us&#160;&#160;</b></a></li>
+            <li class="nav-item" data-bs-toggle="collapse" ><a class="nav-link" onclick="LOGIN()" data-bs-toggle="modal" data-bs-target="#sign-in"> <b class="nav_name">&#160;&#160;<i class="fas fa-envelope"></i> CONTACT&#160;&#160;</b></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </section>
+    <section class="home_screen_main">
+      <div class="container-fluid home_section">
+        <div class="row align-items-center">
+          <div class="col-md-6 home_left text-md-start">
+          <h1><br></h1>
+          <span class="small-title">Data into Insights</span>
+          <h1><span>We Provide </span><br> <b>Quality Data Services</b></h1>
+          <p>Say goodbye to data headaches;<br>let us handle your challenges with precision and expertise.<br>
+            "Connect with us to solve all your data-related troubles and worries".
+          </p>
+          <!---   <button class="btn btn-connect">Connect With Us</button>      --->  
+            <div class="container">
+              <a href="#services" class="btn btn-light btn-lg me-2 btn-connect">Explore Our Services</a>
+              <a href="#contact" class="btn btn-outline-light btn-lg">Get a Free Consultation</a>
+            </div>
+          </div>
+          <div class="col-md-6 home_right mt-4 mt-md-0">
+            <img src="images/home_screen/4.png" alt="Robot Illustration" class="robot-img">
+          </div>
+        </div>
+      </div>
+    </section>
+  </header>
+  <main>
+    <section class="process">
+      <h1>How it works</h1>
+      <hr><br>
+      <div class="row">
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card bg-c-1">
+            <div class="card-body">
+              <h6 class="card-title"><b><u>Requirement Gathering</u></b></h6>
+              <p class="card-text">We begin by understanding your project's goals, scope, and timeline.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card bg-c-2">
+            <div class="card-body">
+              <h6 class="card-title"><u><b>Expert Matching</b></u></h6>
+              <p class="card-text">We assign the most qualified Expert or team based on your specific needs.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card bg-c-3">
+            <div class="card-body">
+              <h6 class="card-title"><b><u>Planning & Scheduling</u></b></h6>
+              <p class="card-text">We create a detailed plan and schedule regular updates via Zoom.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card bg-c-4">
+            <div class="card-body">
+              <h6 class="card-title"><u><b>Execution & Delivery</b></u></h6>
+              <p class="card-text">We manage the project, ensuring high-quality results delivered on time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="how-section" style="display:none;">
+        <div class="row row1">
+          <h1><br>Job Support Process</h1>
+          <hr>
+          <div class="col-md-6 how-img">
+            <img src="/images/process/3.png" alt="" />
+          </div>
+          <div class="col-md-6">
+            <h1>Job Support Process</h1>
+            <h4 class="subheading">Unlock Your Potential with Our Online Technical Job Support Services.<br><br></h4>
+            <ul class="section-content">
+              <li class="mb-3"><b>Initial Enquiry:</b> Once you reach out to us, we will organize a conference call between
+                you and our
+                expert consultant.</li>
+              <li class="mb-3"><b>Project Discussion:</b> During the call, you can share details about your project and
+                clarify your
+                expectations. If you feel confident and comfortable, you can proceed with the consultant.</li>
+              <li class="mb-3"><b>Support Flexibility:</b> Our standard working hours are Monday to Friday. However, if you
+                have urgent
+                deadlines, weekend support can be arranged based on the consultant's availability.</li>
+              <li class="mb-3"><b>Contact Us:</b> For any questions or assistance, feel free to reach us at +91 630 5821
+                520.</li>
+            </ul>
+          </div>
+        </div>
+        <h1><br></h1>
+        <div class="row row2">
+          <div class="col-md-6">
+            <h1>Guidelines for Job Assistance</h1>
+            <h4 class="subheading">Guidelines for ensuring Effective Collaboration and Confidentiality.<br><br></h4>
+            <ul class="section-content">
+              <li class="mb-3"><b>Confidentiality:</b> All work performed on your behalf will be treated with strict
+                confidentiality.</li>
+              <li class="mb-3"><b>Guidance Required:</b> To provide effective support, our consultant will need your
+                assistance in
+                understanding the details of your project thoroughly.</li>
+              <li class="mb-3"><b>Project Familiarization:</b> Since your project is unique, the consultant will require
+                time to
+                familiarize themselves with it. Guidance will improve as the consultant gains complete knowledge of your
+                project.</li>
+              <li class="mb-3"><b>Non-Refundable Fees:</b> Support fees are non-refundable. Please ensure that you require
+                assistance
+                and are unable to complete tasks independently before proceeding with payment.</li>
+            </ul>
+          </div>
+          <div class="col-md-6 how-img">
+            <img src="/images/process/5.png" alt="">
+          </div>
+        </div>
+    </section>
+    <section class="services">
+      <h1 class="mb-5">Our Services
+        <hr>
+      </h1>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col">
+          <div class="card service-card">
+            <div class="card-body">
+              <h5 class="services-title">Data Engineering Services</h5>
+              <ul class="services-list">
+                <li>Pipeline Design & Development</li>
+                <li>ETL/ELT Services</li>
+                <li>Data Integration</li>
+                <li>Data Lake & Warehouse Architecture</li>
+                <li>Big Data Solutions</li>
+                <li>Real-Time Data Processing</li>
+                <li>Cloud Data Solutions</li>
+                <li>Data Governance & Security</li>
+                <li>DataOps</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    
+        <div class="col">
+          <div class="card service-card">
+            <div class="card-body">
+              <h5 class="services-title">Data Analysis Services</h5>
+              <ul class="services-list">
+                <li>Descriptive Analysis</li>
+                <li>Exploratory Data Analysis (EDA)</li>
+                <li>Data Visualization</li>
+                <li>Predictive Analytics</li>
+                <li>Business Intelligence (BI)</li>
+                <li>Data Cleansing & Transformation</li>
+                <li>Survey Data Analysis</li>
+                <li>Anomaly Detection</li>
+                <li>Customer Segmentation Analysis</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    
+        <div class="col">
+          <div class="card service-card">
+            <div class="card-body">
+              <h5 class="services-title">Data Science Services</h5>
+              <ul class="services-list">
+                <li>ML Model Development</li>
+                <li>Deep Learning Solutions</li>
+                <li>Data Mining</li>
+                <li>Natural Language Processing</li>
+                <li>Recommendation Systems</li>
+                <li>Predictive Modeling</li>
+                <li>A/B Testing & Experimentation</li>
+                <li>Model Deployment & Monitoring</li>
+                <li>AI-driven Automation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    </section>
+
+  </main>
+  <section class="stats-section">
+    <div class="row align-items-center">
+      <!-- Left Text Section -->
+      <div class="col-md-6">
+        <div class="stats-title">
+          Why <span style="color: #FF7F50;">We’re Trusted </span>by Data Professionals.
+        </div>
+      </div>
+  
+      <!-- Right Stats Section -->
+      <div class="col-md-6">
+        <div class="stats-container">
+          <div class="stats-card">Assisted 1,000+ professionals in <span style="color: #FF7F50;">data engineering,
+              analysis, and science</span> roles.</div>
+          <div class="stats-card">Built and optimized ETL pipelines <span style="color: #FF7F50;">processing 10+
+              petabytes</span> annually.</div>
+          <div class="stats-card">Supported real-time analytics <span style="color: #FF7F50;">handling 2 billion
+              events</span> daily.</div>
+          <div class="stats-card"><span style="color: #FF7F50;">Guided 700+ professionals</span> in developing impactful
+            data dashboards.</div>
+        </div>
+      </div>
+    </div>
+  
+  </section>
+
+<footer class="bg-dark text-inverse sc-content">
+  <div class="-container py-8 pt-md-8 pb-md-8">
+
+    <div class="row">
+      <div class="col-md-4 col-lg-5">
+        <div>
+          <h4 class="footer_title">About Us</h4>
+          <p>We provide expert job support, traning & consultancy services in Azure data Engineering, Analytics,
+            Science & more. <br>Helping professionals achieve
+            their goals with confidence.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <div>
+          <h4 class="footer_title">Quick Links</h4>
+          <p><a href="#"> Home</a><span> | </span>
+            <a href="#"> About Us</a><br>
+            <a href="#">Services</a> <span> | </span>
+            <a href="#">Pricing</a><br>
+            <a href="#">Contact Us</a>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <h4 class="footer_title">Contact Us</h4>
+        <div>
+          <p><a href="mailto:contact@tds.com">contact@datasciencepro.in</a><br>
+            Phone: <a href="tel:+11234567890">+91 630 5821 520</a><br>
+            Address: will publish soon.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <div>
+          <h4 class="footer_title">Follow Us</h4>
+          <nav class="nav social-icons social-white">
+            <a href="#"><i class="fab fa-linkedin"></i></a> <!-- LinkedIn -->
+            <a href="#"><i class="fab fa-whatsapp"></i></a> <!-- whatsapp -->
+            <a href="#"><i class="fab fa-telegram"></i></a> <!-- Telegram -->
+            <a href="#"><i class="fab fa-instagram"></i></a> <!-- Instagram -->
+            <a href="#"><i class="fab fa-twitter"></i></a> <!-- Twitter -->
+            <a href="#"><i class="fab fa-facebook"></i></a> <!-- Facebook -->
+            <a href="#"><i class="fab fa-youtube"></i></a> <!-- Youtube -->
+          </nav>
+          Website: https://datasciencepro.in
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr style="border: 1px solid #a8a6a6; margin: 20px 0;">
+  <div style="text-align: center;">
+    <div class="d-lg-flex flex-column align-items-lg-center text-lg-start  text-sm-start">
+      <p style="color:#FF934F !important; margin: 0 ;padding: 0;">© 2025 datasciencepro.in
+        Limited. All rights
+        reserved.</p>
+    </div>
+    <p style="margin: 0; font-size: 0.9em;">
+      <a href="/privacy policy">Privacy Policy</a> |
+      <a href="/cookie policy">Cookie Policy</a> |
+      <a href="/terms and services">Terms and Services</a>
+    </p>
+  </div>
+</footer>
+</div>
+</body>
+</html>

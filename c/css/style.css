@@ -1,0 +1,356 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0 !important;
+    background-color:#212529;
+    color:rgb(222, 220, 220);
+}
+
+.-bgc{background-color:white;}
+
+a {cursor: pointer;}
+
+/* ---------------------------------------------------------------------End Nav Bar -------------------------------------------- */
+.navbar {box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.navbar-toggler {border: 0 !important;}
+
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+}
+
+/* Lines of the Toggler */
+.toggler-icon{
+    width: 30px;
+    height: 3px;
+    background-color: grey;
+    display: block;
+    transition: all 0.2s;
+}
+
+/* Adds Space between the lines */
+.middle-bar{ margin: 5px auto;}
+
+/* State when navbar is opened (START) */
+.navbar-toggler .top-bar { transform: rotate(45deg); transform-origin: 10% 10%;}
+.navbar-toggler .middle-bar {opacity: 0; }
+.navbar-toggler .bottom-bar { transform: rotate(-45deg); transform-origin: 10% 90%;}
+/* State when navbar is opened (END) */
+
+/* State when navbar is collapsed (START) */
+.navbar-toggler.collapsed .top-bar  {transform: rotate(0);}
+.navbar-toggler.collapsed .middle-bar {opacity: 1;}
+.navbar-toggler.collapsed .bottom-bar {transform: rotate(0);}
+/* State when navbar is collapsed (END) */
+
+/* Color of Toggler when collapsed */
+.navbar-toggler.collapsed .toggler-icon {background-color: #777777;}
+
+/* list hover effect color */ 
+#navlist a:hover {color: #4285f4 !important;}
+
+/* ---------------------------------------------------------------------End Nav Bar --------------------------------------------*/
+.home_screen{
+    
+}
+
+.home_section {
+    --background-color: #508ac3;
+    --padding: 50px 15px;
+    text-align: center;
+}
+
+.home_section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.home_section p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.robot-img {
+    max-width: 100%;
+    height: auto;
+}
+
+.home_right{
+    padding: 0%;
+}
+.home_left{
+    padding: 7%;
+    
+}
+.maintext {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.small-title {
+    color: #ffffff;
+    text-decoration: none;
+    border: 2px solid #c5c5c5;
+    background: transparent;
+    font-size: 15px;
+    padding: 5px 18px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.maintext {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center !important;
+    height: 90 vh;
+}
+
+.-btn-connect {
+    background-color: #6c63ff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.-btn-connect:hover {
+    background-color: #38f985;
+}
+
+/* From Uiverse.io by xueyuantan */ 
+.btn-connect {
+ --width: 11em;
+ --height: 3em;
+ --border-radius: 30em;
+ --background-color: #4794f8;
+ --font-size: 15px;
+ --font-family: inherit;
+    border: none !important;
+ position: relative;
+ overflow: hidden;
+ z-index: 1;
+ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-connect::before {
+ content: '';
+ width: 0;
+ height: 3em;
+ --border-radius: 30em;
+ position: absolute;
+ top: 0;
+ left: 0;
+ background-image: linear-gradient(to right, #a7eac8 0%, #08a636 100%);
+ transition: .5s ease;
+ display: block;
+ z-index: -1;
+}
+
+.btn-connect:hover::before {
+ width: 100%;
+}
+
+/*------------------------------------------------------------*/
+main{
+    padding: 2% 7% !important; /* Default for larger screens like laptops */
+    --background-color:white !important
+}
+
+@media (max-width: 768px) {/* For mobile devices */
+    main{
+      padding: 2% 2% !important;
+    }
+  }
+
+    .how-section h4 {
+        color: #FF934F;
+        font-weight: bold;
+        font-size: 30px;
+    }
+
+    .how-section .subheading {
+        color: #6c63ff;
+        font-size: 20px;
+    }
+
+    .how-section row2 {
+        margin-top: 10%;
+        text-align: justify; 
+        text-justify: inter-word;
+    }
+
+    .how-section row1 {
+        margin-top: 10%;
+        text-align: justify; 
+        text-justify: inter-word;
+    }
+
+    .how-section li{
+        list-style-type: none;
+    }
+
+
+    .how-img {
+        text-align: center;
+    }
+
+    .how-img img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+    }
+
+    .card {
+        background-color: #212529; /* Matches your background */
+        color: #fff;
+        border-radius: 10px;
+        border: none;
+        position: relative;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+ }
+
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+    }
+
+    .equal-height {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+        /* Center content vertically */ 
+    .card-title{ color: #f5f5f5;} 
+
+    .card-text{ text-align: justify; text-justify: inter-word; } 
+    
+    .bg-c-a { background: linear-gradient(45deg,#4099ff,#73b4ff); } 
+    .bg-c-b { background: linear-gradient(45deg,#2ed8b6,#59e0c5); } 
+    .bg-c-c { background: linear-gradient(45deg,#FFB64D,#ffcb80); } 
+    .bg-c-d { background: linear-gradient(45deg,#FF5370,#ff869a); } 
+        /* --------------------------------- */
+    .bg-c-1 { background: linear-gradient(to right, #373b44, #4286f4) !important; color: #fff;}
+    .bg-c-2 { background: linear-gradient(to right, #0a504a, #38ef7d) !important; color: #fff; }
+    .bg-c-3 { background: linear-gradient(to right, #a86008, #ffba56) !important; color: #fff; }             
+    .bg-c-4 { background: linear-gradient(to right, #493240, #f09) !important; color: #fff; }
+
+
+    .services {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .services-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #007bff;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+    .services-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .services-list li {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .services-list li::before {
+      content: '\2713';
+      /* Unicode checkmark */
+      color: #007bff;
+      font-size: 1.2rem;
+      margin-right: 10px;
+    }
+
+/*             ----------------------------------------------------------------           */
+
+.stats-section {
+    margin: 0;
+    padding: 0;
+    background-color: #004a63;
+    /* Dark blue background */
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 40px 40px;
+}
+
+
+.stats-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Create 2 columns */
+    gap: 20px;
+}
+
+.stats-card {
+    background-color: #ffffff;
+    /* White cards */
+    color: #004a63;
+    /* Dark blue text */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.stats-card:hover {
+    transform: scale(1.05);
+}
+
+
+/*  footer */
+footer{ background-color: #333; color: #fff !important; padding: 40px 20px;}
+footer a{ text-decoration: none; color: #fff !important;}
+footer a:hover { color: #4f67ff !important;}
+footer .footer_title{color:#FF934F !important;}
+
+footer li {
+    display: list-item;
+    unicode-bidi: isolate;
+}
+
+footer .list-unstyled {
+    padding-left: 0;
+    list-style: none;
+    font-size: 18px !important;
+}
+
+footer .social-icons {
+    padding-top:10px;
+    padding-bottom: 7px;
+    display: flex;
+    justify-content: space-between; /* Spread items equally */
+    align-items: center; /* Center items vertically */
+}
+
+footer .social-icons i {
+    font-size: 24px; /* Adjust the size as needed */
+    margin: 0 5px; /* Adjust the spacing between icons */
+}
+/* footer end */

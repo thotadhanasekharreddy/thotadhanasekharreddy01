@@ -1,0 +1,37 @@
+project-folder/
+│
+├── index.html              # Main HTML file
+│
+│
+├── css/                    # Folder for stylesheets
+│   ├── style.css           # Main stylesheet
+│   └── library.min.css     # CSS from a library (e.g., Bootstrap, Tailwind)
+│
+│
+├── js/                     # Folder for JavaScript files
+│   ├── script.js           # Main script file
+│   └── library.min.js      # JS library file (e.g., jQuery, Bootstrap JS)    
+│
+│
+├── images/                 # Stores all the image files used on the webpage (e.g., logos, icons, backgrounds)
+│   ├── logo.png            
+│   └── background.jpg      
+│
+│
+├── libs/                   # Folder for external libraries/frameworks (optional)
+│   ├── bootstrap/          # Example: Bootstrap CSS/JS files
+│   ├── jquery/             # Example: jQuery files
+│   └── react/     
+│
+│
+├── fonts/                  # Folder for custom fonts (optional)
+│   └── custom-font.ttf     
+│
+│
+├── assets/                 # For downloadable or extra resources (e.g., PDFs, data files).
+│   └── some-file.pdf       
+│
+│
+└── temp/
+    └── README.md           # Provides a brief description of the project, instructions, or additional notes.
+    └── structure.txt 
