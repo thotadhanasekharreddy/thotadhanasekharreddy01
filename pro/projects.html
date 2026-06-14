@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Engineering Projects — CSE, ECE, EEE, AI/ML | DataSciencePro</title>
+  <meta name="description" content="Browse 200+ final year engineering projects. Filter by branch, difficulty, type and budget. CSE, Data Science, AI/ML, EEE, ECE, Mechanical projects with full documentation." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="index.html" class="navbar-logo">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect width="28" height="28" rx="7" fill="#1F4E79"/>
+            <path d="M7 14 L14 7 L21 14 L14 21 Z" fill="none" stroke="#ED7D31" stroke-width="2.2"/>
+            <circle cx="14" cy="14" r="3" fill="#00B894"/>
+          </svg>
+          DataScience<span>Pro</span>
+        </a>
+        <ul class="navbar-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="projects.html" class="active">Projects</a></li>
+          <li><a href="domains.html">Domains</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="navbar-cta">
+          <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%20want%20to%20enquire%20about%20final%20year%20projects" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener">
+            <i data-lucide="message-circle" aria-hidden="true"></i> WhatsApp
+          </a>
+        </div>
+        <button class="hamburger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="mobile-menu">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="domains.html">Domains</a>
+      <a href="how-it-works.html">How It Works</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://wa.me/919XXXXXXXXX" class="btn btn-whatsapp" target="_blank" rel="noopener"><i data-lucide="message-circle" aria-hidden="true"></i> WhatsApp</a>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">Projects</span>
+      </nav>
+      <h1>Browse All Projects</h1>
+      <p>
+        <span id="projectTotal">110</span> projects across 6 branches — filter by branch, difficulty, type &amp; budget.
+      </p>
+    </div>
+  </div>
+
+  <!-- SEARCH BAR -->
+  <div style="background:var(--card-bg);border-bottom:1px solid var(--border);padding:1rem 0;">
+    <div class="container">
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;position:relative;">
+          <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--text-muted);" aria-hidden="true"></i>
+          <input id="searchInput" type="search" placeholder="Search by title, tech, domain…"
+            style="width:100%;padding:0.65rem 1rem 0.65rem 2.5rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.9rem;background:var(--bg);"
+            aria-label="Search projects" />
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.88rem;color:var(--text-muted);">
+          Sort by:
+          <select id="sortSelect" style="padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.88rem;background:var(--bg);" aria-label="Sort projects">
+            <option value="popular">Popularity</option>
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+          </select>
+        </div>
+        <div style="font-size:0.88rem;color:var(--text-muted);white-space:nowrap;">
+          Showing <strong id="projectCount">0</strong> projects
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CATALOG -->
+  <section style="padding:2rem 0 4rem;">
+    <div class="container">
+      <!-- Mobile filter toggle -->
+      <button class="mobile-filter-toggle" aria-label="Open filters">
+        <i data-lucide="sliders-horizontal" style="width:16px;height:16px;" aria-hidden="true"></i>
+        Filters
+      </button>
+
+      <div class="catalog-layout">
+
+        <!-- FILTER SIDEBAR -->
+        <aside class="filter-sidebar" aria-label="Project filters">
+          <div class="filter-sidebar-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem;">Filters</h3>
+            <button class="filter-close" aria-label="Close filters">✕</button>
+          </div>
+
+          <!-- Branch -->
+          <h4>Branch</h4>
+          <label class="filter-checkbox"><input type="checkbox" name="branch" value="cse" /> CSE / IT</label>
+          <label class="filter-checkbox"><input type="checkbox" name="branch" value="ds"  /> Data Science</label>
+          <label class="filter-checkbox"><input type="checkbox" name="branch" value="aiml"/> AI / ML</label>
+          <label class="filter-checkbox"><input type="checkbox" name="branch" value="eee" /> EEE</label>
+          <label class="filter-checkbox"><input type="checkbox" name="branch" value="ece" /> ECE</label>
+          <label class="filter-checkbox"><input type="checkbox" name="branch" value="mech"/> Mechanical</label>
+
+          <!-- Difficulty -->
+          <h4>Difficulty</h4>
+          <label class="filter-checkbox"><input type="checkbox" name="difficulty" value="beginner"     /> Beginner</label>
+          <label class="filter-checkbox"><input type="checkbox" name="difficulty" value="intermediate" /> Intermediate</label>
+          <label class="filter-checkbox"><input type="checkbox" name="difficulty" value="advanced"     /> Advanced</label>
+
+          <!-- Type -->
+          <h4>Project Type</h4>
+          <label class="filter-checkbox"><input type="checkbox" name="type" value="mini"     /> Mini Project</label>
+          <label class="filter-checkbox"><input type="checkbox" name="type" value="major"    /> Major Project</label>
+          <label class="filter-checkbox"><input type="checkbox" name="type" value="research" /> Research</label>
+          <label class="filter-checkbox"><input type="checkbox" name="type" value="industry" /> Industry Grade</label>
+
+          <!-- Price -->
+          <h4>Max Budget</h4>
+          <div class="price-range-wrap">
+            <div class="price-labels">
+              <span>₹6,000</span>
+              <span id="priceLabel">₹30,000</span>
+            </div>
+            <input id="priceSlider" type="range" class="price-slider"
+              min="6000" max="30000" step="1000" value="30000"
+              aria-label="Maximum budget" />
+          </div>
+
+          <button id="clearFilters" class="filter-clear">Clear All Filters</button>
+        </aside>
+
+        <!-- PROJECT GRID -->
+        <div>
+          <!-- Empty state -->
+          <div id="emptyState" hidden style="text-align:center;padding:4rem 2rem;">
+            <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
+            <h3 style="margin-bottom:0.5rem;color:var(--text);">No projects found</h3>
+            <p style="margin-bottom:1.5rem;">Try adjusting your filters or search term.</p>
+            <button id="clearFilters2" onclick="document.getElementById('clearFilters').click()" class="btn btn-primary">Clear Filters</button>
+          </div>
+          <div id="projectsGrid" class="catalog-grid" aria-live="polite" aria-label="Project results">
+            <!-- Rendered by projects.js -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner">
+    <div class="container">
+      <h2>Can't Find What You Need?</h2>
+      <p>We build custom projects to your exact specifications. Tell us your requirements on WhatsApp.</p>
+      <div class="cta-banner-btns">
+        <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%20need%20a%20custom%20project" class="btn btn-white btn-lg" target="_blank" rel="noopener">
+          <i data-lucide="message-circle" aria-hidden="true"></i> Request Custom Project
+        </a>
+        <a href="contact.html" class="btn btn-outline-white btn-lg">
+          <i data-lucide="mail" aria-hidden="true"></i> Send Enquiry
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">DataScience<span>Pro</span></div>
+          <p>Helping engineering students deliver industry-grade final year projects.</p>
+          <div class="social-icons">
+            <a href="https://instagram.com/datasciencepro.in" class="social-icon" target="_blank" rel="noopener" aria-label="Instagram"><i data-lucide="instagram" style="width:17px;height:17px;" aria-hidden="true"></i></a>
+            <a href="https://wa.me/919XXXXXXXXX" class="social-icon" target="_blank" rel="noopener" aria-label="WhatsApp"><i data-lucide="message-circle" style="width:17px;height:17px;" aria-hidden="true"></i></a>
+            <a href="https://linkedin.com" class="social-icon" target="_blank" rel="noopener" aria-label="LinkedIn"><i data-lucide="linkedin" style="width:17px;height:17px;" aria-hidden="true"></i></a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Pages</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="projects.html">All Projects</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-heading">Branches</div>
+          <ul class="footer-links">
+            <li><a href="projects.html?branch=cse">CSE / IT</a></li>
+            <li><a href="projects.html?branch=ds">Data Science</a></li>
+            <li><a href="projects.html?branch=aiml">AI / ML</a></li>
+            <li><a href="projects.html?branch=eee">EEE</a></li>
+            <li><a href="projects.html?branch=ece">ECE</a></li>
+            <li><a href="projects.html?branch=mech">Mechanical</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-heading">Contact</div>
+          <div class="footer-contact">
+            <div class="footer-contact-item"><i data-lucide="message-circle" style="width:15px;height:15px;" aria-hidden="true"></i><span>WhatsApp: +91 9XXXXXXXXX</span></div>
+            <div class="footer-contact-item"><i data-lucide="mail" style="width:15px;height:15px;" aria-hidden="true"></i><span>info@datasciencepro.in</span></div>
+            <div class="footer-contact-item"><i data-lucide="clock" style="width:15px;height:15px;" aria-hidden="true"></i><span>Mon–Sat, 10 AM – 9 PM</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 DataSciencePro.in · All rights reserved.</span>
+        <span>Made with ❤️ for Engineering Students across India</span>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%20want%20to%20enquire%20about%20final%20year%20projects" class="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </a>
+
+  <script src="js/data.js"></script>
+  <script src="js/projects.js"></script>
+  <script src="js/main.js"></script>
+  <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+</body>
+</html>
