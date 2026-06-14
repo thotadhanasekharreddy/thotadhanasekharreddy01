@@ -41,19 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* --- Scroll-triggered fade-in --- */
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-
-  /* --- Staggered children fade-in --- */
+  /* --- Staggered children fade-in (must run BEFORE observer setup) --- */
   document.querySelectorAll('[data-stagger]').forEach(parent => {
     const delay = parseFloat(parent.dataset.stagger) || 0.1;
     parent.querySelectorAll(':scope > *').forEach((child, i) => {
@@ -61,6 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
       child.style.transitionDelay = `${i * delay}s`;
     });
   });
+
+  /* --- Scroll-triggered fade-in (runs after stagger so all .fade-in exist) --- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
   /* --- Animated counters --- */
   const animateCounters = () => {
