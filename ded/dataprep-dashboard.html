@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataPrep · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --nav:#0f1b33; --bg:#f4f5f8; --card:#fff; --line:#e6e8ee; --text:#1f2430; --muted:#6b7280;
+    --blue:#1a9be6; --blue-d:#0f82c7; --ok:#4cc46d; --ok-bg:#e9f9ee; --fail:#e5566b; --fail-bg:#fdecee;
+    --partial:#e3a51b; --partial-bg:#fff6df;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Lato,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+  button,select,input{font-family:inherit}
+  a{color:var(--blue);cursor:pointer}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+  /* ---------- Top nav ---------- */
+  .nav{height:52px;background:var(--nav);display:flex;align-items:center;padding:0 18px;color:#fff;position:sticky;top:0;z-index:50}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;margin-right:42px}
+  .menu{display:flex;gap:6px;height:100%}
+  .menu a{color:#cfd6e4;text-decoration:none;display:flex;align-items:center;padding:0 12px;border-bottom:3px solid transparent;font-weight:600}
+  .menu a.active{color:#fff;border-bottom-color:#2fc28a}
+  .menu a:hover{color:#fff}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .icon-btn{background:none;border:0;color:#cfd6e4;width:34px;height:34px;border-radius:6px;display:grid;place-items:center;cursor:pointer;position:relative}
+  .icon-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+  .badge{position:absolute;top:2px;right:0;background:#e5484d;color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 5px}
+  .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f6c27a,#b46a3c);border:2px solid #fff;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff;cursor:pointer;margin:0 6px}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  h1{font-size:22px;font-weight:600;margin:0}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:4px;padding:8px 14px;cursor:pointer;font-weight:600;color:#333}
+  .btn:hover{border-color:#c9ced8}
+  .split{display:inline-flex;margin-left:10px;position:relative}
+  .split .btn-primary{background:var(--blue);color:#fff;border:0;padding:9px 14px;border-radius:4px 0 0 4px;font-weight:700;cursor:pointer}
+  .split .btn-caret{background:var(--blue);color:#fff;border:0;border-left:1px solid rgba(255,255,255,.35);border-radius:0 4px 4px 0;padding:0 9px;cursor:pointer}
+  .split button:hover{background:var(--blue-d)}
+
+  .dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--line);border-radius:6px;box-shadow:0 8px 24px rgba(15,27,51,.14);min-width:200px;padding:6px 0;display:none;z-index:60}
+  .dropdown.open{display:block}
+  .dropdown button{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:9px 14px;cursor:pointer;color:var(--text)}
+  .dropdown button:hover{background:#f2f6fb}
+  .dropdown .sub{font-size:12px;color:var(--muted)}
+
+  /* ---------- Overview ---------- */
+  .overview{border-radius:8px;padding:12px 20px 20px;background:linear-gradient(180deg,#4a7ff0 0 60%,#fff 60%);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .overview h2{color:#fff;margin:0 0 12px;font-size:15px;font-weight:700}
+  .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  .stat{border-radius:6px;padding:14px 12px 12px;position:relative;cursor:pointer;border:1px solid transparent;text-align:left;background:none;color:inherit}
+  .stat:hover{border-color:rgba(0,0,0,.08)}
+  .stat .num{font-size:20px;font-weight:800;display:block;margin-bottom:8px}
+  .stat .lbl{display:flex;align-items:center;gap:6px;font-size:13px;color:#333}
+  .stat .corner{position:absolute;top:10px;right:10px;opacity:.55}
+  .s1{background:#dff4fb}.s2{background:#fdf3d4}.s3{background:#f4e6fb}.s4{background:#e3ebf8}.s5{background:#e4f7ea}.s6{background:#fde6e9}
+
+  /* ---------- Cards ---------- */
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px}
+  .grid2{display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-top:14px}
+  .card{background:var(--card);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05);padding:16px 20px}
+  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .card-head h3{margin:0;font-size:15px;font-weight:700}
+  .card-head .right{margin-left:auto}
+  select.range{border:1px solid var(--line);background:#f7f8fa;border-radius:4px;padding:4px 8px;font-size:12px;color:#444;cursor:pointer}
+  .chart-box{position:relative;height:190px}
+  .donut-wrap{display:flex;align-items:center;gap:18px}
+  .donut-box{position:relative;width:200px;height:200px;flex:none}
+  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  .donut-center b{font-size:20px}.donut-center span{font-size:12px;color:var(--muted)}
+  .legend{list-style:none;padding:0;margin:0;font-size:12.5px}
+  .legend li{display:flex;align-items:center;gap:8px;margin:10px 0;cursor:pointer}
+  .legend li.off{opacity:.4}
+  .sw{width:11px;height:11px;border-radius:2px}
+
+  /* ---------- Recent pipelines ---------- */
+  .pl-list{list-style:none;margin:0;padding:0;max-height:430px;overflow:auto}
+  .pl-list li{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #f1f2f5;cursor:pointer;border-radius:4px}
+  .pl-list li:hover{background:#f7f9fc}
+  .pl-av{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:11px}
+  .pl-name{font-weight:600}
+  .pl-ws{font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center;margin-top:2px}
+  .pl-meta{margin-left:auto;text-align:right;font-size:12px;color:var(--muted)}
+  .pl-meta b{display:block;color:#444;font-weight:600}
+
+  /* ---------- Jobs table ---------- */
+  .tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin-top:4px}
+  .tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 0;cursor:pointer;color:var(--muted);font-size:14px}
+  .tabs button.active{color:var(--text);font-weight:700;border-bottom-color:var(--text)}
+  .search{margin-left:auto;border:1px solid var(--line);border-radius:4px;padding:5px 9px;font-size:12.5px;width:200px}
+  table{width:100%;border-collapse:collapse;margin-top:4px}
+  th{text-align:left;font-weight:700;font-size:13.5px;padding:12px 8px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap}
+  th .arrow{font-size:10px;color:#aaa;margin-left:4px}
+  th.sorted .arrow{color:var(--text)}
+  td{padding:12px 8px;border-bottom:1px solid #f1f2f5;vertical-align:top}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#f7f9fc}
+  .sub-txt{font-size:12px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:4px}
+  .pill{display:inline-flex;align-items:center;gap:5px;border-radius:12px;padding:3px 9px;font-size:12px;font-weight:600;border:1px solid}
+  .pill.failure{color:#c8384e;background:var(--fail-bg);border-color:#f2a8b3}
+  .pill.success{color:#258a43;background:var(--ok-bg);border-color:#a5dfb5}
+  .pill.partial{color:#a2740b;background:var(--partial-bg);border-color:#efd18a}
+  .pager{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+  .pager button{border:1px solid var(--line);background:#fff;border-radius:4px;width:28px;height:28px;cursor:pointer}
+  .pager button:disabled{opacity:.4;cursor:default}
+  .empty{padding:36px;text-align:center;color:var(--muted)}
+
+  /* ---------- Drawer ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(15,27,51,.35);display:none;z-index:80}
+  .scrim.open{display:block}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:420px;max-width:92vw;background:#fff;z-index:90;transform:translateX(100%);transition:transform .22s ease;box-shadow:-8px 0 30px rgba(0,0,0,.15);display:flex;flex-direction:column}
+  .drawer.open{transform:none}
+  .drawer header{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+  .drawer header h4{margin:0;font-size:16px}
+  .drawer header button{margin-left:auto}
+  .drawer .body{padding:18px 20px;overflow:auto}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:10px 12px;font-size:13.5px}
+  .kv dt{color:var(--muted)}.kv dd{margin:0}
+  .log{margin-top:18px;background:#0f1b33;color:#d6e2ff;font-family:Consolas,monospace;font-size:12px;border-radius:6px;padding:12px;line-height:1.6;white-space:pre-wrap}
+  .log .err{color:#ff9aa8}.log .ok{color:#8fe3a8}
+  .drawer footer{margin-top:auto;padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+  .btn-blue{background:var(--blue);color:#fff;border:0}
+  .btn-blue:hover{background:var(--blue-d)}
+
+  /* ---------- Notifications ---------- */
+  .notif{width:340px;right:-60px;max-height:400px;overflow:auto}
+  .notif .n-item{padding:10px 14px;border-bottom:1px solid #f1f2f5;font-size:13px}
+  .notif .n-item small{color:var(--muted);display:block;margin-top:2px}
+  .notif h5{margin:4px 14px 8px;font-size:13px}
+
+  /* ---------- Chat ---------- */
+  .chat-fab{position:fixed;right:24px;bottom:24px;width:50px;height:50px;border-radius:50%;background:var(--blue);border:0;color:#fff;cursor:pointer;box-shadow:0 6px 18px rgba(26,155,230,.4);z-index:70;display:grid;place-items:center}
+  .chat-bubble{position:fixed;right:84px;bottom:30px;background:#fff;border-radius:8px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12);z-index:70;font-size:13px}
+  .chat-bubble b{display:block}.chat-bubble span{color:var(--muted);font-size:12px}
+  .chat-bubble .x{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;border:0;background:var(--blue);color:#fff;font-size:11px;cursor:pointer}
+  .chat-panel{position:fixed;right:24px;bottom:86px;width:330px;height:420px;background:#fff;border-radius:10px;box-shadow:0 12px 36px rgba(0,0,0,.2);z-index:75;display:none;flex-direction:column;overflow:hidden}
+  .chat-panel.open{display:flex}
+  .chat-panel header{background:var(--nav);color:#fff;padding:12px 14px;font-weight:700}
+  .chat-msgs{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#f7f8fa}
+  .msg{max-width:80%;padding:8px 11px;border-radius:10px;font-size:13px;line-height:1.4}
+  .msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start}
+  .msg.me{background:var(--blue);color:#fff;align-self:flex-end}
+  .chat-input{display:flex;border-top:1px solid var(--line)}
+  .chat-input input{flex:1;border:0;padding:12px;font-size:13px}
+  .chat-input button{border:0;background:none;color:var(--blue);font-weight:700;padding:0 14px;cursor:pointer}
+
+  .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#1f2430;color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;z-index:100;pointer-events:none}
+  .toast.show{opacity:1}
+
+  @media (max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}.grid3{grid-template-columns:1fr 1fr}.grid3 .card:last-child{grid-column:1/-1}}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.grid3,.grid2{grid-template-columns:1fr}.menu{display:none}.search{display:none}main{padding:16px}.donut-wrap{flex-direction:column}}
+  /* ---------- Views: Pipelines / Workspaces / Jobs ---------- */
+  .view{display:none}.view.active{display:block}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+  .toolbar input[type=search],.toolbar select{border:1px solid var(--line);border-radius:4px;padding:7px 10px;font-size:13px;background:#fff;color:var(--text)}
+  .toolbar input[type=search]{width:240px}
+  .toolbar label{display:flex;align-items:center;gap:6px;font-size:13px;color:#444;cursor:pointer}
+  .spacer{margin-left:auto}
+  .count-note{color:var(--muted);font-size:13px}
+  .btn-solo{background:var(--blue);color:#fff;border:0;padding:9px 14px;border-radius:4px;font-weight:700;cursor:pointer}
+  .btn-solo:hover{background:var(--blue-d)}
+  .chip-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{background:#fff;border:0;border-radius:6px;padding:10px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:130px;text-align:left;font:inherit;color:inherit;cursor:pointer;border-left:4px solid var(--line)}
+  .chip b{display:block;font-size:19px;font-weight:800}.chip span{font-size:12px;color:var(--muted)}
+  .chip.c-ok{border-left-color:var(--ok)}.chip.c-partial{border-left-color:var(--partial)}.chip.c-fail{border-left-color:var(--fail)}.chip.c-all{border-left-color:var(--blue)}
+  .chip.active{outline:2px solid var(--blue)}
+  .chip.static{cursor:default;border-left-color:#c9ced8}
+  .ws-tag{display:inline-flex;align-items:center;gap:6px}
+  .ws-dot{width:9px;height:9px;border-radius:2px;flex:none}
+  .sched{font-size:13px;color:#333;white-space:nowrap}.sched.none{color:var(--muted)}
+  .mini{border:1px solid var(--line);background:#fff;border-radius:4px;padding:5px 10px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap}
+  .mini:hover{border-color:var(--blue);color:var(--blue)}
+  .mini:disabled{opacity:.45;cursor:default;border-color:var(--line);color:inherit}
+  .pill.running{color:#0f6fae;background:#e6f4fd;border-color:#9fd2f4}
+  .pill.never{color:var(--muted);background:#f4f5f8;border-color:var(--line)}
+  .table-wrap{overflow-x:auto}
+  .plain th{cursor:default}
+  .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .ws-card{background:#fff;border:1px solid transparent;border-radius:6px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);cursor:pointer;text-align:left;font:inherit;color:inherit}
+  .ws-card:hover{border-color:#c9d8ea}
+  .ws-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .ws-ic{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;flex:none}
+  .ws-name{font-weight:700;font-size:14.5px}
+  .ws-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .ws-stats{display:flex;gap:16px;font-size:12.5px;color:#444;border-top:1px solid #f1f2f5;padding-top:10px}
+  .ws-stats .when{margin-left:auto;color:var(--muted)}
+  .load-more{display:block;margin:20px auto 0}
+  .dr-section{margin-top:22px}
+  .dr-section h5{margin:0 0 6px;font-size:13.5px}
+  .mini-runs{list-style:none;padding:0;margin:0}
+  .mini-runs li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f2f5;font-size:12.5px}
+  @media (max-width:760px){.menu{display:flex;overflow-x:auto}.menu a{padding:0 8px}.brand{margin-right:10px}.toolbar input[type=search]{width:100%}.nav-right .icon-btn:not(#bellBtn){display:none}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="nav">
+  <div class="brand">
+    <svg width="24" height="22" viewBox="0 0 24 22" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M2 3l6 16 4-10 4 10 6-16"/></svg>
+    DataPrep
+  </div>
+  <div class="menu">
+    <a href="#/home" data-view="home" class="active">Home</a><a href="#/pipelines" data-view="pipelines">Pipelines</a><a href="#/workspaces" data-view="workspaces">Workspaces</a><a href="#/jobs" data-view="jobs">Jobs</a>
+  </div>
+  <div class="nav-right">
+    <button class="icon-btn" title="Search" onclick="document.getElementById('jobSearch').focus()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M13 13l4 4"/></svg></button>
+    <div style="position:relative">
+      <button class="icon-btn" title="Notifications" id="bellBtn">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 13V8a5 5 0 0110 0v5l2 2H2z"/><path d="M7 17h4"/></svg>
+        <span class="badge" id="bellCount">32</span></button>
+      <div class="dropdown notif" id="notifMenu"></div>
+    </div>
+    <button class="icon-btn" title="Settings"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="3"/><path d="M9 1v3M9 14v3M1 9h3M14 9h3M3.3 3.3l2.1 2.1M12.6 12.6l2.1 2.1M3.3 14.7l2.1-2.1M12.6 5.4l2.1-2.1"/></svg></button>
+    <button class="icon-btn" title="Help"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="8"/><path d="M7 7a2 2 0 113 1.7c-.7.4-1 1-1 1.8M9 13h.01"/></svg></button>
+    <button class="icon-btn" title="What's new"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2c3 0 6 3 6 6l-6 6-4-4z"/><path d="M6 10l-3 1-1 5 5-1 1-3"/></svg></button>
+    <div class="avatar" title="Profile">TD</div>
+    <button class="icon-btn" title="Apps"><svg width="18" height="18" fill="currentColor"><g><circle cx="3" cy="3" r="1.6"/><circle cx="9" cy="3" r="1.6"/><circle cx="15" cy="3" r="1.6"/><circle cx="3" cy="9" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="15" cy="9" r="1.6"/><circle cx="3" cy="15" r="1.6"/><circle cx="9" cy="15" r="1.6"/><circle cx="15" cy="15" r="1.6"/></g></svg></button>
+  </div>
+</nav>
+
+<main>
+<div id="view-home" class="view active">
+  <div class="page-head">
+    <h1>Dashboard</h1>
+    <div style="display:flex;align-items:center">
+      <button class="btn" onclick="toast('Opening template gallery…')">Browse template</button>
+      <div class="split">
+        <button class="btn-primary" onclick="toast('New pipeline created')">+ Create new</button>
+        <button class="btn-caret" id="createCaret" aria-label="More create options">▾</button>
+        <div class="dropdown" id="createMenu">
+          <button onclick="toast('New pipeline created')"><span>⛓</span><div>Pipeline<div class="sub">Import, prepare and export data</div></div></button>
+          <button onclick="toast('New workspace created')"><span>🗂</span><div>Workspace<div class="sub">Group related pipelines</div></div></button>
+          <button onclick="toast('Opening dataset import…')"><span>⬆</span><div>Import dataset<div class="sub">Files, cloud storage, databases</div></div></button>
+          <button onclick="toast('Opening scheduler…')"><span>⏱</span><div>Schedule<div class="sub">Run a pipeline on a timer</div></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OVERVIEW ================= -->
+  <section class="overview">
+    <h2>Overview</h2>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <!-- ================= CHARTS ================= -->
+  <section class="grid3">
+    <div class="card">
+      <div class="card-head"><h3>Successful jobs</h3>
+        <select class="range" data-chart="success"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">Last 7 days</option></select></div>
+      <div class="chart-box"><canvas id="successChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Failed jobs</h3>
+        <select class="range" data-chart="failed"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">Last 7 days</option></select></div>
+      <div class="chart-box"><canvas id="failedChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>All jobs status</h3>
+        <select class="range right" data-chart="donut"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">Last 7 days</option></select></div>
+      <div class="donut-wrap">
+        <div class="donut-box"><canvas id="donutChart"></canvas>
+          <div class="donut-center"><b id="donutTotal">83</b><span>Jobs</span></div></div>
+        <ul class="legend" id="donutLegend"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PIPELINES + JOBS ================= -->
+  <section class="grid2">
+    <div class="card">
+      <div class="card-head"><h3>⛓ Recent pipelines</h3><a class="right" href="#/pipelines">View all Pipelines</a></div>
+      <ul class="pl-list" id="plList"></ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Jobs</h3>
+        <select class="range" id="jobsRange"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">Last 7 days</option></select>
+        <a class="right" onclick="go('jobs',{range:state.range,status:state.filter})">View all jobs</a></div>
+      <div class="tabs" id="tabs">
+        <button data-f="all" class="active">All (0)</button>
+        <button data-f="success">Success (0)</button>
+        <button data-f="partial">Partial Success (0)</button>
+        <button data-f="failure">Failure (0)</button>
+        <input class="search" id="jobSearch" placeholder="Search job ID or pipeline">
+      </div>
+      <table>
+        <thead id="homeHead"><tr>
+          <th data-k="id">Jobs<span class="arrow">▲▼</span></th>
+          <th data-k="pipeline">Pipelines<span class="arrow">▲▼</span></th>
+          <th data-k="time" class="sorted">Run time<span class="arrow">▼</span></th>
+          <th data-k="status">Status<span class="arrow">▲▼</span></th>
+        </tr></thead>
+        <tbody id="jobRows"></tbody>
+      </table>
+      <div class="pager"><span id="pageInfo"></span>
+        <button id="prevPg" aria-label="Previous page">‹</button><button id="nextPg" aria-label="Next page">›</button></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PIPELINES VIEW ================= -->
+<div id="view-pipelines" class="view">
+  <div class="page-head"><h1>Pipelines</h1>
+    <div style="display:flex;gap:10px"><button class="btn" onclick="toast('Opening template gallery…')">Browse template</button>
+    <button class="btn-solo" onclick="toast('New pipeline created')">+ Create pipeline</button></div></div>
+  <div class="card">
+    <div class="toolbar">
+      <input type="search" id="plQ" placeholder="Search pipelines or workspaces" aria-label="Search pipelines">
+      <select id="plWs" aria-label="Workspace"><option value="all">All workspaces</option></select>
+      <select id="plStatus" aria-label="Last run status"><option value="all">Any last run</option><option value="success">Success</option><option value="partial">Partial success</option><option value="failure">Failure</option><option value="never">Never run</option></select>
+      <select id="plSort" aria-label="Sort"><option value="mod">Recently modified</option><option value="lastRun">Last run</option><option value="name">Name (A–Z)</option></select>
+      <label><input type="checkbox" id="plSched"> Scheduled only</label>
+      <span class="spacer count-note" id="plCount"></span>
+    </div>
+    <div class="table-wrap"><table class="plain">
+      <thead><tr><th>Pipeline</th><th>Workspace</th><th>Schedule</th><th>Last run</th><th>Modified</th><th></th></tr></thead>
+      <tbody id="plRows"></tbody></table></div>
+    <div class="pager"><span id="plPageInfo"></span><button id="plPrev" aria-label="Previous page">‹</button><button id="plNext" aria-label="Next page">›</button></div>
+  </div>
+</div>
+
+<!-- ================= WORKSPACES VIEW ================= -->
+<div id="view-workspaces" class="view">
+  <div class="page-head"><h1>Workspaces</h1><button class="btn-solo" id="newWs">+ New workspace</button></div>
+  <div class="toolbar">
+    <input type="search" id="wsQ" placeholder="Search workspaces" aria-label="Search workspaces">
+    <select id="wsSort" aria-label="Sort"><option value="mod">Recently modified</option><option value="pipes">Most pipelines</option><option value="name">Name (A–Z)</option></select>
+    <label><input type="checkbox" id="wsMine"> Owned by me</label>
+    <span class="spacer count-note" id="wsCount"></span>
+  </div>
+  <div class="ws-grid" id="wsGrid"></div>
+  <button class="btn load-more" id="wsMore">Show more workspaces</button>
+</div>
+
+<!-- ================= JOBS VIEW ================= -->
+<div id="view-jobs" class="view">
+  <div class="page-head"><h1>Jobs</h1><button class="btn" id="jbExport">Export CSV</button></div>
+  <div class="chip-row" id="jbChips"></div>
+  <div class="card">
+    <div class="toolbar">
+      <input type="search" id="jbQ" placeholder="Search job ID or pipeline" aria-label="Search jobs">
+      <select id="jbRange" aria-label="Date range"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">Last 7 days</option></select>
+      <select id="jbStatus" aria-label="Status"><option value="all">All statuses</option><option value="success">Success</option><option value="partial">Partial success</option><option value="failure">Failure</option></select>
+      <select id="jbPipe" aria-label="Pipeline"><option value="all">All pipelines</option></select>
+      <span class="spacer count-note" id="jbCount"></span>
+    </div>
+    <div class="table-wrap"><table>
+      <thead id="jbHead"><tr>
+        <th data-k="id">Job ID<span class="arrow"></span></th><th data-k="pipeline">Pipeline<span class="arrow"></span></th>
+        <th data-k="ws">Workspace<span class="arrow"></span></th><th data-k="time">Started<span class="arrow"></span></th>
+        <th data-k="dur">Duration<span class="arrow"></span></th><th data-k="trig">Triggered by<span class="arrow"></span></th>
+        <th data-k="status">Status<span class="arrow"></span></th></tr></thead>
+      <tbody id="jbRows"></tbody></table></div>
+    <div class="pager"><span id="jbPageInfo"></span><button id="jbPrev" aria-label="Previous page">‹</button><button id="jbNext" aria-label="Next page">›</button></div>
+  </div>
+</div>
+</main>
+
+<!-- ================= JOB DRAWER ================= -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Job details">
+  <header><h4 id="dTitle">Job details</h4><button class="btn" id="dClose">✕</button></header>
+  <div class="body" id="dBody"></div>
+  <footer id="dFoot"></footer>
+</aside>
+
+<!-- ================= CHAT ================= -->
+<div class="chat-bubble" id="chatBubble"><b>We're Online!</b><span>How may I help you today?</span><button class="x" id="bubbleX" aria-label="Dismiss">✕</button></div>
+<div class="chat-panel" id="chatPanel">
+  <header>Support</header>
+  <div class="chat-msgs" id="chatMsgs"><div class="msg bot">Hi! Ask me about failed jobs, schedules or pipelines.</div></div>
+  <div class="chat-input"><input id="chatIn" placeholder="Type a message…"><button id="chatSend">Send</button></div>
+</div>
+<button class="chat-fab" id="chatFab" aria-label="Open chat">
+  <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2"><path d="M3 4h16v11H8l-5 4z"/><path d="M7 9h8M7 12h5"/></svg></button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA ================= */
+const WS = {Campaigns:'#e07a3f',"Webinar - DND":'#7a5af5',Demo:'#2f9e8f',Finance:'#d14b6a',Marketing:'#3b82f6',Operations:'#a16207',Support:'#0e7490'};
+const PIPELINES = [
+  {name:'Leads Pipeline',ws:'Campaigns',mod:3,by:'Thota D.'},
+  {name:'CRM Backup',ws:'Webinar - DND',mod:3,by:'Thota D.'},
+  {name:'My pipeline-3',ws:'Demo',mod:4,by:'Anjali R.'},
+  {name:'My pipeline',ws:'Demo',mod:6,by:'Anjali R.'},
+  {name:'Invoice Cleanup',ws:'Finance',mod:22,by:'Karthik M.'},
+  {name:'Webinar Attendees Merge',ws:'Webinar - DND',mod:41,by:'Priya S.'},
+  {name:'Campaign ROI Daily',ws:'Marketing',mod:75,by:'Thota D.'},
+  {name:'Ticket SLA Feed',ws:'Support',mod:130,by:'Rahul V.'},
+  {name:'Vendor Master Sync',ws:'Operations',mod:260,by:'Karthik M.'},
+];
+const ERRORS = {
+  'Leads Pipeline':'Source connection failed: OAuth token expired for CRM connector.',
+  'CRM Backup':'Destination write failed: target table schema mismatch (column "lead_score").',
+  'My pipeline-3':'Transform step 4 failed: null value in required column "email".',
+  'Webinar Attendees Merge':'Join step failed: duplicate keys in right dataset.',
+};
+
+// 21 hourly slots: 11 PM–12 AM (prev day) … 7 PM–8 PM
+const SLOT_LABELS = [];
+for(let i=0;i<21;i++){const s=(23+i)%24,e=(s+1)%24;SLOT_LABELS.push(`${fmtH(s)} - ${fmtH(e)}`);}
+function fmtH(h){const p=h<12?'AM':'PM';const x=h%12||12;return `${x} ${p}`;}
+
+// Seeded random for stable mock data
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;}}
+
+function buildRange(key){
+  if(key==='today'){
+    // Matches screenshot: 1 success/hour, 3 failures/hour (2 in the first slot) => 21 / 0 / 62
+    const success=SLOT_LABELS.map(()=>1), partial=SLOT_LABELS.map(()=>0), failed=SLOT_LABELS.map((_,i)=>i===0?2:3);
+    return {labels:SLOT_LABELS,success,partial,failed,jobs:makeJobs(success,partial,failed,'2026-09-17',SLOT_LABELS.length,true)};
+  }
+  const r=rng(key==='yesterday'?77:303);
+  if(key==='yesterday'){
+    const success=SLOT_LABELS.map(()=>1+Math.round(r())),partial=SLOT_LABELS.map(()=>r()<.2?1:0),failed=SLOT_LABELS.map(()=>Math.round(r()*2));
+    return {labels:SLOT_LABELS,success,partial,failed,jobs:makeJobs(success,partial,failed,'2026-09-16',SLOT_LABELS.length,true)};
+  }
+  const labels=[],success=[],partial=[],failed=[];
+  for(let d=6;d>=0;d--){const dt=new Date(2026,8,17-d);labels.push(dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}));
+    success.push(18+Math.round(r()*14));partial.push(Math.round(r()*4));failed.push(d===0?62:Math.round(r()*30));}
+  success[6]=21;partial[6]=0;
+  return {labels,success,partial,failed,jobs:makeJobs(success,partial,failed,null,7,false)};
+}
+
+let idSeq=2305000009749874;
+function makeJobs(success,partial,failed,dateStr,n,hourly){
+  const jobs=[];const r=rng(hourly?n*11+success[0]:999);
+  const failers=['Leads Pipeline','CRM Backup','My pipeline-3'];
+  for(let i=0;i<n;i++){
+    let base;
+    if(hourly){const [y,m,d]=dateStr.split('-').map(Number);base=new Date(y,m-1,d,0,0,0);base.setHours((23+i+1)%24===0?0:(23+i+1)%24);if(i===0&&dateStr)base.setDate(base.getDate());}
+    else{base=new Date(2026,8,17-(6-i),20,0,0);}
+    const add=(status,p,k)=>{const t=new Date(base.getTime()-(hourly?0:Math.floor(r()*20)*3600e3));t.setSeconds(6+k*3);
+      const pl=PIPELINES.find(x=>x.name===p);
+      jobs.push({id:String(idSeq-=Math.floor(1000+r()*9000)),pipeline:p,ws:pl.ws,time:t,dur:Math.round(12+r()*60),status});};
+    for(let k=0;k<failed[i];k++)add('failure',hourly?failers[k%3]:failers[Math.floor(r()*3)],k);
+    for(let k=0;k<partial[i];k++)add('partial','Webinar Attendees Merge',k+3);
+    for(let k=0;k<success[i];k++)add('success',hourly?'My pipeline':PIPELINES[3+Math.floor(r()*6)].name,k+4);
+  }
+  // Screenshot top rows: 2305000009749874, 2305000009755164
+  if(dateStr==='2026-09-17'){jobs.sort((a,b)=>b.time-a.time);jobs[0].id='2305000009749874';jobs[1].id='2305000009755164';jobs.forEach(j=>{if(j.time.getHours()===20)j.time.setSeconds(6);});}
+  return jobs;
+}
+
+const DATA={today:buildRange('today'),yesterday:buildRange('yesterday'),week:buildRange('week')};
+const sum=a=>a.reduce((x,y)=>x+y,0);
+
+/* ================= OVERVIEW ================= */
+function renderStats(){
+  const t=DATA.today;
+  const items=[
+    ['s1',PIPES.length,'Total pipelines','⛓','pipelines'],
+    ['s2',PIPES.filter(p=>p.schedule).length,'Scheduled pipelines','📅','scheduled'],
+    ['s3',WORKSPACES.length,'Workspaces','🗂','workspaces'],
+    ['s4',t.jobs.length,'Total jobs today','▤','all'],
+    ['s5',sum(t.success),'Successful jobs today','✅','success'],
+    ['s6',sum(t.failed),'Failed jobs today','⛔','failure'],
+  ];
+  document.getElementById('stats').innerHTML=items.map(([c,n,l,ic,f])=>
+    `<button class="stat ${c}" data-f="${f}"><span class="corner">${ic}</span><span class="num">${n}</span><span class="lbl">${ic} ${l}</span></button>`).join('');
+  document.querySelectorAll('.stat').forEach(b=>b.onclick=()=>{
+    const f=b.dataset.f;
+    if(['all','success','failure'].includes(f)){jobsRangeSel.value='today';state.range='today';state.filter=f;state.page=0;renderJobs();
+      document.querySelector('.grid2 .card:last-child').scrollIntoView({behavior:'smooth'});}
+    else go(f==='workspaces'?'workspaces':'pipelines',f==='scheduled'?{sched:true}:{});
+  });
+}
+
+/* ================= CHARTS ================= */
+Chart.defaults.font.family='Lato';Chart.defaults.font.size=10;Chart.defaults.color='#666';
+function lineCfg(color,bg,label){
+  return {type:'line',data:{labels:[],datasets:[{label,data:[],borderColor:color,backgroundColor:ctx=>{
+      const {ctx:c,chartArea:a}=ctx.chart;if(!a)return bg;const g=c.createLinearGradient(0,a.top,0,a.bottom);g.addColorStop(0,bg);g.addColorStop(1,'rgba(255,255,255,0)');return g;},
+    fill:true,borderDash:[4,3],borderWidth:1.5,pointRadius:3,pointBackgroundColor:color,tension:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.parsed.y} ${label.toLowerCase()}`}}},
+      scales:{x:{grid:{display:false},ticks:{maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:11},title:{display:true,text:'Timeline',font:{size:11}}},
+        y:{beginAtZero:true,grid:{color:'#f0f0f0'},title:{display:true,text:label,font:{size:11}},ticks:{precision:0}}}}};
+}
+const successChart=new Chart(document.getElementById('successChart'),lineCfg('#5ccf7c','rgba(92,207,124,.30)','Successful jobs'));
+const failedChart=new Chart(document.getElementById('failedChart'),lineCfg('#e5566b','rgba(229,86,107,.28)','Failed jobs'));
+const donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',
+  data:{labels:['Successful jobs','Partial Success','Failed jobs'],datasets:[{data:[0,0,0],backgroundColor:['#8fdb9f','#e3a51b','#e5566b'],borderWidth:2,borderColor:'#fff'}]},
+  options:{cutout:'68%',plugins:{legend:{display:false}},onClick:(e,els)=>{if(els.length){const f=['success','partial','failure'][els[0].index];state.filter=f;state.page=0;renderJobs();}}}});
+
+function setLine(chart,key,field){const d=DATA[key];chart.data.labels=d.labels;chart.data.datasets[0].data=d[field];
+  chart.options.scales.x.title.text=key==='week'?'Day':'Timeline';chart.update();}
+function setDonut(key){const d=DATA[key];const v=[sum(d.success),sum(d.partial),sum(d.failed)];
+  donutChart.data.datasets[0].data=v;donutChart.update();
+  document.getElementById('donutTotal').textContent=sum(v);
+  document.getElementById('donutLegend').innerHTML=donutChart.data.labels.map((l,i)=>
+    `<li data-i="${i}" class="${donutChart.getDataVisibility(i)?'':'off'}"><span class="sw" style="background:${donutChart.data.datasets[0].backgroundColor[i]}"></span>${l} <b style="margin-left:auto">${v[i]}</b></li>`).join('');
+  document.querySelectorAll('#donutLegend li').forEach(li=>li.onclick=()=>{donutChart.toggleDataVisibility(+li.dataset.i);setDonut(key);});
+}
+document.querySelectorAll('select[data-chart]').forEach(s=>s.onchange=()=>{
+  if(s.dataset.chart==='success')setLine(successChart,s.value,'success');
+  if(s.dataset.chart==='failed')setLine(failedChart,s.value,'failed');
+  if(s.dataset.chart==='donut')setDonut(s.value);
+});
+
+/* ================= RECENT PIPELINES ================= */
+function ago(m){if(m<60)return `${m} minutes ago`;const h=Math.round(m/60);return `${h} hour${h>1?'s':''} ago`;}
+document.getElementById('plList').innerHTML=PIPELINES.map(p=>{
+  const ini=p.by.split(' ').map(x=>x[0]).join('');
+  return `<li tabindex="0" data-p="${p.name}"><div class="pl-av" style="background:${WS[p.ws]}">${ini}</div>
+    <div><div class="pl-name">${p.name}</div><div class="pl-ws">🗀 ${p.ws}</div></div>
+    <div class="pl-meta"><b>Modified</b>${ago(p.mod)}</div></li>`;}).join('');
+document.querySelectorAll('#plList li').forEach(li=>{li.onclick=()=>openPipe(li.dataset.p);li.onkeydown=e=>{if(e.key==='Enter')openPipe(li.dataset.p);};});
+
+/* ================= JOBS TABLE ================= */
+const state={range:'today',filter:'all',sortK:'time',sortDir:-1,page:0,search:''};
+const PER=8;
+const jobsRangeSel=document.getElementById('jobsRange');const searchIn=document.getElementById('jobSearch');
+const fmtTime=t=>t.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+', '+t.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const pill=s=>({failure:'<span class="pill failure">✕ Failure</span>',success:'<span class="pill success">✓ Success</span>',partial:'<span class="pill partial">◐ Partial</span>'}[s]);
+
+function renderJobs(){
+  const all=DATA[state.range].jobs;
+  const counts={all:all.length,success:0,partial:0,failure:0};all.forEach(j=>counts[j.status]++);
+  const names={all:'All',success:'Success',partial:'Partial Success',failure:'Failure'};
+  document.querySelectorAll('#tabs button').forEach(b=>{b.textContent=`${names[b.dataset.f]} (${counts[b.dataset.f]})`;b.classList.toggle('active',b.dataset.f===state.filter);});
+  const q=state.search.toLowerCase();
+  let rows=all.filter(j=>(state.filter==='all'||j.status===state.filter)&&(!q||j.id.includes(q)||j.pipeline.toLowerCase().includes(q)));
+  rows.sort((a,b)=>{const x=a[state.sortK],y=b[state.sortK];return (x>y?1:x<y?-1:0)*state.sortDir;});
+  const pages=Math.max(1,Math.ceil(rows.length/PER));state.page=Math.min(state.page,pages-1);
+  const slice=rows.slice(state.page*PER,state.page*PER+PER);
+  document.getElementById('jobRows').innerHTML=slice.length?slice.map(j=>`<tr data-id="${j.id}" tabindex="0">
+    <td>${j.id}</td><td>${j.pipeline}<div class="sub-txt">🗀 ${j.ws}</div></td>
+    <td>${fmtTime(j.time)}<div class="sub-txt">Ran for ${j.dur}s</div></td><td>${pill(j.status)}</td></tr>`).join('')
+    :`<tr><td colspan="4" class="empty">No jobs match this filter. Try another tab or clear the search.</td></tr>`;
+  document.getElementById('pageInfo').textContent=rows.length?`${state.page*PER+1}–${Math.min(rows.length,(state.page+1)*PER)} of ${rows.length}`:'0 of 0';
+  document.getElementById('prevPg').disabled=state.page===0;document.getElementById('nextPg').disabled=state.page>=pages-1;
+  document.querySelectorAll('#homeHead th').forEach(th=>{const on=th.dataset.k===state.sortK;th.classList.toggle('sorted',on);
+    th.querySelector('.arrow').textContent=on?(state.sortDir>0?'▲':'▼'):'▲▼';});
+  document.querySelectorAll('#jobRows tr[data-id]').forEach(tr=>{tr.onclick=()=>openJob(tr.dataset.id);tr.onkeydown=e=>{if(e.key==='Enter')openJob(tr.dataset.id);};});
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{state.filter=b.dataset.f;state.page=0;renderJobs();});
+document.querySelectorAll('#homeHead th').forEach(th=>th.onclick=()=>{if(state.sortK===th.dataset.k)state.sortDir*=-1;else{state.sortK=th.dataset.k;state.sortDir=1;}renderJobs();});
+document.getElementById('prevPg').onclick=()=>{state.page--;renderJobs();};
+document.getElementById('nextPg').onclick=()=>{state.page++;renderJobs();};
+jobsRangeSel.onchange=()=>{state.range=jobsRangeSel.value;state.page=0;renderJobs();};
+searchIn.oninput=()=>{state.search=searchIn.value.trim();state.page=0;renderJobs();};
+
+/* ================= DRAWER ================= */
+const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim');
+let current=null;
+function openJob(id,range=state.range){
+  current=DATA[range].jobs.find(j=>j.id===id);const j=current;
+  document.getElementById('dTitle').textContent=`Job ${j.id}`;
+  const err=ERRORS[j.pipeline]||'Some rows were skipped during export.';
+  const t=fmtTime(j.time);
+  document.getElementById('dBody').innerHTML=`<dl class="kv">
+    <dt>Status</dt><dd>${pill(j.status)}</dd><dt>Pipeline</dt><dd>${j.pipeline}</dd><dt>Workspace</dt><dd>${j.ws}</dd>
+    <dt>Started</dt><dd>${t}</dd><dt>Duration</dt><dd>${j.dur}s</dd><dt>Triggered by</dt><dd>Schedule (hourly)</dd>
+    ${j.status!=='success'?`<dt>Reason</dt><dd style="color:#c8384e">${err}</dd>`:''}</dl>
+    <div class="log">[init] Job queued
+[import] Reading source… done
+${j.status==='failure'?`<span class="err">[error] ${err}</span>
+[abort] Job stopped, 0 rows exported`:j.status==='partial'?`[transform] 7 steps applied
+<span class="err">[warn] 112 rows skipped</span>
+<span class="ok">[export] 4,388 rows written</span>`:`[transform] 7 steps applied
+<span class="ok">[export] 4,500 rows written</span>`}</div>`;
+  document.getElementById('dFoot').innerHTML=`<button class="btn" id="fOpenPl">Open pipeline</button>${j.status==='success'?'':'<button class="btn btn-blue" id="fRerun">Rerun job</button>'}`;
+  document.getElementById('fOpenPl').onclick=()=>openPipe(j.pipeline);
+  if(j.status!=='success')document.getElementById('fRerun').onclick=()=>{runPipe(j.pipeline);closeDrawer();};
+  openDrawer();
+}
+function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('open');}
+document.getElementById('dClose').onclick=closeDrawer;scrim.onclick=closeDrawer;
+function openDrawer(){drawer.classList.add('open');scrim.classList.add('open');document.getElementById('dClose').focus();}
+
+/* ================= MENUS ================= */
+const createMenu=document.getElementById('createMenu'),notifMenu=document.getElementById('notifMenu');
+document.getElementById('createCaret').onclick=e=>{e.stopPropagation();notifMenu.classList.remove('open');createMenu.classList.toggle('open');};
+const fails=DATA.today.jobs.filter(j=>j.status==='failure').sort((a,b)=>b.time-a.time).slice(0,6);
+notifMenu.innerHTML='<h5>Notifications</h5>'+fails.map(j=>`<div class="n-item">⛔ <b>${j.pipeline}</b> failed<small>${fmtTime(j.time)}</small></div>`).join('')
+  +'<div class="n-item"><a onclick="markRead()">Mark all as read</a></div>';
+document.getElementById('bellBtn').onclick=e=>{e.stopPropagation();createMenu.classList.remove('open');notifMenu.classList.toggle('open');};
+function markRead(){document.getElementById('bellCount').style.display='none';notifMenu.classList.remove('open');toast('All notifications marked as read');}
+document.addEventListener('click',e=>{if(!e.target.closest('.dropdown')){createMenu.classList.remove('open');notifMenu.classList.remove('open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();createMenu.classList.remove('open');notifMenu.classList.remove('open');}});
+
+/* ================= CHAT ================= */
+const panel=document.getElementById('chatPanel'),msgs=document.getElementById('chatMsgs'),chatIn=document.getElementById('chatIn');
+document.getElementById('bubbleX').onclick=()=>document.getElementById('chatBubble').remove();
+document.getElementById('chatFab').onclick=()=>{panel.classList.toggle('open');document.getElementById('chatBubble')?.remove();chatIn.focus();};
+function send(){const v=chatIn.value.trim();if(!v)return;msgs.insertAdjacentHTML('beforeend',`<div class="msg me"></div>`);msgs.lastChild.textContent=v;chatIn.value='';
+  setTimeout(()=>{const f=sum(DATA.today.failed);msgs.insertAdjacentHTML('beforeend',`<div class="msg bot">${/fail/i.test(v)?`${f} jobs failed today. Most come from Leads Pipeline, CRM Backup and My pipeline-3 — open a job row to see the error.`:'Thanks! A support agent will reply shortly.'}</div>`);msgs.scrollTop=msgs.scrollHeight;},500);
+  msgs.scrollTop=msgs.scrollHeight;}
+document.getElementById('chatSend').onclick=send;chatIn.onkeydown=e=>{if(e.key==='Enter')send();};
+
+/* ================= TOAST ================= */
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ================= DIRECTORY DATA (workspaces + pipelines) ================= */
+const $=id=>document.getElementById(id);
+const esc=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const PALETTE=['#e07a3f','#7a5af5','#2f9e8f','#d14b6a','#3b82f6','#a16207','#0e7490','#16a34a','#c026d3','#ea580c','#4f46e5','#0891b2'];
+const OWNERS=['Thota D.','Anjali R.','Karthik M.','Priya S.','Rahul V.','Meena K.'];
+const ME='Thota D.';
+const NOW=new Date(2026,8,17,20,5,0);
+const R=rng(4242);
+const pick=a=>a[Math.floor(R()*a.length)];
+
+// 106 workspaces: the 7 seen in the screenshot + generated team spaces
+const WORKSPACES=Object.keys(WS).map(n=>({name:n,color:WS[n]}));
+(()=>{const D=['Sales','Marketing','Finance','HR','Customer Success','Operations','Product','Engineering','Procurement','Legal','Supply Chain','Analytics','Partners','Events','Support'];
+  const K=['Reporting','Data Hub','Imports','Sandbox','Archive','Ops','Forecasts'];let i=0;
+  for(const k of K)for(const d of D){if(WORKSPACES.length>=106)return;WORKSPACES.push({name:`${d} ${k}`,color:PALETTE[i++%PALETTE.length]});}})();
+WORKSPACES.forEach((w,i)=>{WS[w.name]=w.color;
+  w.owner=i<7?(i%2?'Anjali R.':ME):pick(OWNERS);w.members=1+Math.floor(R()*12);
+  w.mod=i<7?[3,3,4,22,75,260,130][i]:Math.floor(300+R()*86000);});
+
+// 137 pipelines: the 9 known ones + generated
+const SCHEDULES={'Leads Pipeline':'Every hour','CRM Backup':'Every hour','My pipeline-3':'Every hour','My pipeline':'Every hour',
+  'Invoice Cleanup':'Daily, 6:00 AM','Campaign ROI Daily':'Daily, 7:30 AM','Ticket SLA Feed':'Daily, 11:00 PM','Vendor Master Sync':'Weekly, Mon 2:00 AM'};
+const SRC=['Zoho CRM','CSV upload','Google Sheets','MySQL','Salesforce','Amazon S3','Azure Blob','REST API','Zoho Analytics'];
+const DST=['Zoho Analytics','Zoho CRM','Amazon S3','Azure SQL','Google Drive','Snowflake','Export to file'];
+const ALLJOBS=[...DATA.today.jobs,...DATA.yesterday.jobs,...DATA.week.jobs.filter(j=>j.time<new Date(2026,8,16))].sort((a,b)=>b.time-a.time);
+const PIPES=PIPELINES.map(p=>({...p}));
+(()=>{const N=['Leads','Contacts','Deals','Invoices','Orders','Tickets','Payroll','Vendors','Inventory','Survey Responses','Campaign Spend','Web Sessions','Refunds','Shipments','Subscriptions','Attendees','Expenses','Assets'];
+  const V=['Sync','Cleanup','Merge','Backup','Daily Load','Dedupe','Enrichment','Export','Transform','Snapshot'];
+  const seen=new Set(PIPES.map(p=>p.name));
+  while(PIPES.length<137){const n=`${pick(N)} ${pick(V)}`;if(seen.has(n))continue;seen.add(n);
+    PIPES.push({name:n,ws:WORKSPACES[Math.floor(Math.pow(R(),1.5)*WORKSPACES.length)].name,mod:Math.floor(300+R()*86000),by:pick(OWNERS)});}})();
+PIPES.forEach(p=>{p.src=pick(SRC);p.dst=pick(DST.filter(d=>d!==p.src));p.schedule=SCHEDULES[p.name]||null;
+  const last=ALLJOBS.find(j=>j.pipeline===p.name);
+  if(last){p.last=last.status;p.lastRun=last.time;}
+  else{const x=R();p.last=x<.7?'success':x<.82?'failure':x<.88?'partial':'never';
+    p.lastRun=p.last==='never'?null:new Date(NOW-Math.floor(R()*30*24)*3600e3);}});
+DATA.week.jobs.concat(DATA.today.jobs,DATA.yesterday.jobs).forEach(j=>j.trig=SCHEDULES[j.pipeline]?'Schedule':'Manual');
+
+function agoLong(m){if(m<1)return 'Just now';if(m<60)return `${m} min ago`;const h=Math.round(m/60);if(h<24)return `${h} hour${h>1?'s':''} ago`;const d=Math.round(h/24);return `${d} day${d>1?'s':''} ago`;}
+const statusPill=s=>s==='running'?'<span class="pill running">⟳ Running</span>':s==='never'?'<span class="pill never">Never run</span>':pill(s);
+function pager(info,prev,next,page,per,total,onPage){
+  const pages=Math.max(1,Math.ceil(total/per));
+  $(info).textContent=total?`${page*per+1}–${Math.min(total,(page+1)*per)} of ${total}`:'0 of 0';
+  $(prev).disabled=page===0;$(next).disabled=page>=pages-1;
+  $(prev).onclick=()=>onPage(page-1);$(next).onclick=()=>onPage(page+1);
+}
+
+/* ================= ROUTER ================= */
+const VIEWS=['home','pipelines','workspaces','jobs'];
+function show(v){
+  if(!VIEWS.includes(v))v='home';
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id==='view-'+v));
+  document.querySelectorAll('.menu a').forEach(a=>a.classList.toggle('active',a.dataset.view===v));
+  closeDrawer();window.scrollTo(0,0);
+  ({pipelines:renderPl,workspaces:renderWs,jobs:renderJb}[v]||(()=>{}))();
+}
+function go(v,opts={}){
+  if(v==='pipelines'){Object.assign(pl,{q:'',ws:'all',status:'all',sched:false,page:0},opts);syncPl();}
+  if(v==='jobs'){Object.assign(jb,{q:'',status:'all',pipeline:'all',page:0},opts);syncJb();}
+  if(location.hash!=='#/'+v)location.hash='#/'+v;else show(v);
+}
+window.addEventListener('hashchange',()=>show(location.hash.replace('#/','')));
+
+/* ================= PIPELINES VIEW ================= */
+const pl={q:'',ws:'all',status:'all',sched:false,sort:'mod',page:0},PL_PER=12;
+function syncPl(){$('plQ').value=pl.q;$('plWs').value=pl.ws;$('plStatus').value=pl.status;$('plSched').checked=pl.sched;$('plSort').value=pl.sort;}
+function renderPl(){
+  const q=pl.q.toLowerCase();
+  const rows=PIPES.filter(p=>(!q||p.name.toLowerCase().includes(q)||p.ws.toLowerCase().includes(q))&&(pl.ws==='all'||p.ws===pl.ws)
+    &&(pl.status==='all'||p.last===pl.status)&&(!pl.sched||p.schedule))
+    .sort({mod:(a,b)=>a.mod-b.mod,name:(a,b)=>a.name.localeCompare(b.name),lastRun:(a,b)=>(b.lastRun||0)-(a.lastRun||0)}[pl.sort]);
+  pl.page=Math.max(0,Math.min(pl.page,Math.ceil(rows.length/PL_PER)-1));
+  const sl=rows.slice(pl.page*PL_PER,(pl.page+1)*PL_PER);
+  $('plRows').innerHTML=sl.length?sl.map(p=>`<tr data-p="${esc(p.name)}" tabindex="0">
+    <td><div class="pl-name">${esc(p.name)}</div><div class="sub-txt">${p.src} → ${p.dst}</div></td>
+    <td><span class="ws-tag"><span class="ws-dot" style="background:${WS[p.ws]}"></span>${esc(p.ws)}</span></td>
+    <td><span class="sched ${p.schedule?'':'none'}">${p.schedule?'⏱ '+p.schedule:'Not scheduled'}</span></td>
+    <td>${statusPill(p.last)}<div class="sub-txt">${p.lastRun?fmtTime(p.lastRun):'No runs yet'}</div></td>
+    <td>${agoLong(p.mod)}<div class="sub-txt">by ${p.by}</div></td>
+    <td><button class="mini" data-run="${esc(p.name)}" ${p.last==='running'?'disabled':''}>▶ Run now</button></td></tr>`).join('')
+    :`<tr><td colspan="6" class="empty">No pipelines match these filters. Clear the search or choose another workspace.</td></tr>`;
+  $('plCount').textContent=`${rows.length} of ${PIPES.length} pipelines`;
+  pager('plPageInfo','plPrev','plNext',pl.page,PL_PER,rows.length,n=>{pl.page=n;renderPl();});
+  document.querySelectorAll('#plRows tr[data-p]').forEach(tr=>{tr.onclick=()=>openPipe(tr.dataset.p);tr.onkeydown=e=>{if(e.key==='Enter')openPipe(tr.dataset.p);};});
+  document.querySelectorAll('#plRows [data-run]').forEach(b=>b.onclick=e=>{e.stopPropagation();runPipe(b.dataset.run);});
+}
+function runPipe(name){
+  const p=PIPES.find(x=>x.name===name);if(!p||p.last==='running')return;
+  p.last='running';toast(`Run started for ${name}`);refreshPipe(p);
+  setTimeout(()=>{p.last=ERRORS[name]?'failure':'success';p.lastRun=new Date();p.mod=0;
+    toast(p.last==='success'?`${name} finished successfully`:`${name} failed. Open it to see the error.`);refreshPipe(p);},2500);
+}
+function refreshPipe(p){
+  if($('view-pipelines').classList.contains('active'))renderPl();
+  if(drawer.classList.contains('open')&&$('dTitle').textContent===p.name)openPipe(p.name);
+}
+function openPipe(name){
+  const p=PIPES.find(x=>x.name===name);if(!p)return;
+  const runs=ALLJOBS.filter(j=>j.pipeline===p.name).slice(0,5);
+  $('dTitle').textContent=p.name;
+  $('dBody').innerHTML=`<dl class="kv">
+    <dt>Workspace</dt><dd><span class="ws-tag"><span class="ws-dot" style="background:${WS[p.ws]}"></span>${esc(p.ws)}</span></dd>
+    <dt>Source</dt><dd>${p.src}</dd><dt>Destination</dt><dd>${p.dst}</dd>
+    <dt>Schedule</dt><dd>${p.schedule||'Not scheduled'}</dd>
+    <dt>Last run</dt><dd>${statusPill(p.last)}</dd>
+    ${p.last==='failure'&&ERRORS[p.name]?`<dt>Last error</dt><dd style="color:#c8384e">${ERRORS[p.name]}</dd>`:''}
+    <dt>Owner</dt><dd>${p.by}</dd><dt>Modified</dt><dd>${agoLong(p.mod)}</dd></dl>
+    <div class="dr-section"><h5>Recent runs</h5>${runs.length?`<ul class="mini-runs">${runs.map(j=>`<li><span>${fmtTime(j.time)}</span>${pill(j.status)}</li>`).join('')}</ul>`
+      :'<p class="count-note">No runs in the last 7 days. Run it now to check the setup.</p>'}</div>`;
+  $('dFoot').innerHTML=`<button class="btn" id="fJobs">View jobs</button><button class="btn btn-blue" id="fRun" ${p.last==='running'?'disabled':''}>Run now</button>`;
+  $('fJobs').onclick=()=>go('jobs',{pipeline:p.name,range:'week'});
+  $('fRun').onclick=()=>runPipe(p.name);
+  openDrawer();
+}
+
+/* ================= WORKSPACES VIEW ================= */
+const wsS={q:'',sort:'mod',mine:false,shown:24};
+function renderWs(){
+  const c={};PIPES.forEach(p=>c[p.ws]=(c[p.ws]||0)+1);
+  const q=wsS.q.toLowerCase();
+  const rows=WORKSPACES.filter(w=>(!q||w.name.toLowerCase().includes(q))&&(!wsS.mine||w.owner===ME))
+    .sort({mod:(a,b)=>a.mod-b.mod,name:(a,b)=>a.name.localeCompare(b.name),pipes:(a,b)=>(c[b.name]||0)-(c[a.name]||0)}[wsS.sort]);
+  const ini=n=>n.split(/\s+/).filter(w=>/\w/.test(w)).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  $('wsGrid').innerHTML=rows.length?rows.slice(0,wsS.shown).map(w=>`<button class="ws-card" data-ws="${esc(w.name)}">
+    <div class="ws-top"><div class="ws-ic" style="background:${w.color}">${ini(w.name)}</div>
+      <div><div class="ws-name">${esc(w.name)}</div><div class="ws-sub">Owned by ${w.owner===ME?'you':w.owner}</div></div></div>
+    <div class="ws-stats"><span><b>${c[w.name]||0}</b> pipeline${(c[w.name]||0)===1?'':'s'}</span><span><b>${w.members}</b> member${w.members===1?'':'s'}</span><span class="when">${agoLong(w.mod)}</span></div></button>`).join('')
+    :`<p class="empty" style="grid-column:1/-1">No workspaces match “${esc(wsS.q)}”. Clear the search or create a new workspace.</p>`;
+  $('wsCount').textContent=`${Math.min(wsS.shown,rows.length)} of ${rows.length} workspaces`;
+  $('wsMore').style.display=rows.length>wsS.shown?'':'none';
+  document.querySelectorAll('.ws-card').forEach(b=>b.onclick=()=>go('pipelines',{ws:b.dataset.ws}));
+}
+function newWorkspace(){
+  let n=1;while(WS[`Untitled workspace ${n}`])n++;
+  const name=`Untitled workspace ${n}`,color=PALETTE[WORKSPACES.length%PALETTE.length];
+  WORKSPACES.push({name,color,owner:ME,members:1,mod:0});WS[name]=color;
+  $('plWs').insertAdjacentHTML('beforeend',`<option value="${esc(name)}">${esc(name)}</option>`);
+  renderStats();wsS.sort='mod';$('wsSort').value='mod';
+  if(location.hash==='#/workspaces')renderWs();else go('workspaces');
+  toast(`Created ${name}`);
+}
+
+/* ================= JOBS VIEW ================= */
+const jb={range:'today',status:'all',pipeline:'all',q:'',page:0,sortK:'time',dir:-1},JB_PER=15;
+function syncJb(){$('jbQ').value=jb.q;$('jbRange').value=jb.range;$('jbStatus').value=jb.status;$('jbPipe').value=jb.pipeline;}
+function renderJb(){
+  const q=jb.q.toLowerCase();
+  const base=DATA[jb.range].jobs.filter(j=>(jb.pipeline==='all'||j.pipeline===jb.pipeline)&&(!q||j.id.includes(q)||j.pipeline.toLowerCase().includes(q)));
+  const cnt={all:base.length,success:0,partial:0,failure:0};base.forEach(j=>cnt[j.status]++);
+  const avg=base.length?Math.round(base.reduce((a,j)=>a+j.dur,0)/base.length):0;
+  $('jbChips').innerHTML=[['all','c-all','Total jobs'],['success','c-ok','Successful'],['partial','c-partial','Partial success'],['failure','c-fail','Failed']]
+    .map(([k,c,l])=>`<button class="chip ${c} ${jb.status===k?'active':''}" data-s="${k}"><b>${cnt[k]}</b><span>${l}</span></button>`).join('')
+    +`<div class="chip static"><b>${avg}s</b><span>Average duration</span></div>`;
+  document.querySelectorAll('#jbChips [data-s]').forEach(b=>b.onclick=()=>{jb.status=b.dataset.s;jb.page=0;syncJb();renderJb();});
+  const rows=base.filter(j=>jb.status==='all'||j.status===jb.status)
+    .sort((a,b)=>{const x=a[jb.sortK],y=b[jb.sortK];return (x>y?1:x<y?-1:0)*jb.dir;});
+  jb.page=Math.max(0,Math.min(jb.page,Math.ceil(rows.length/JB_PER)-1));
+  const sl=rows.slice(jb.page*JB_PER,(jb.page+1)*JB_PER);
+  $('jbRows').innerHTML=sl.length?sl.map(j=>`<tr data-id="${j.id}" tabindex="0"><td>${j.id}</td><td>${esc(j.pipeline)}</td>
+    <td><span class="ws-tag"><span class="ws-dot" style="background:${WS[j.ws]}"></span>${esc(j.ws)}</span></td>
+    <td>${fmtTime(j.time)}</td><td>${j.dur}s</td><td>${j.trig}</td><td>${pill(j.status)}</td></tr>`).join('')
+    :`<tr><td colspan="7" class="empty">No jobs match these filters. Try a wider date range or another status.</td></tr>`;
+  $('jbCount').textContent=`${rows.length} job${rows.length===1?'':'s'}`;
+  pager('jbPageInfo','jbPrev','jbNext',jb.page,JB_PER,rows.length,n=>{jb.page=n;renderJb();});
+  document.querySelectorAll('#jbHead th').forEach(th=>{const on=th.dataset.k===jb.sortK;th.classList.toggle('sorted',on);th.querySelector('.arrow').textContent=on?(jb.dir>0?'▲':'▼'):'▲▼';});
+  document.querySelectorAll('#jbRows tr[data-id]').forEach(tr=>{tr.onclick=()=>openJob(tr.dataset.id,jb.range);tr.onkeydown=e=>{if(e.key==='Enter')openJob(tr.dataset.id,jb.range);};});
+}
+
+/* ================= VIEW WIRING ================= */
+function initViews(){
+  $('plWs').insertAdjacentHTML('beforeend',[...WORKSPACES].sort((a,b)=>a.name.localeCompare(b.name)).map(w=>`<option value="${esc(w.name)}">${esc(w.name)}</option>`).join(''));
+  const names=[...new Set(Object.values(DATA).flatMap(d=>d.jobs.map(j=>j.pipeline)))].sort();
+  $('jbPipe').insertAdjacentHTML('beforeend',names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join(''));
+  $('plQ').oninput=e=>{pl.q=e.target.value.trim();pl.page=0;renderPl();};
+  $('plWs').onchange=e=>{pl.ws=e.target.value;pl.page=0;renderPl();};
+  $('plStatus').onchange=e=>{pl.status=e.target.value;pl.page=0;renderPl();};
+  $('plSort').onchange=e=>{pl.sort=e.target.value;renderPl();};
+  $('plSched').onchange=e=>{pl.sched=e.target.checked;pl.page=0;renderPl();};
+  $('wsQ').oninput=e=>{wsS.q=e.target.value.trim();wsS.shown=24;renderWs();};
+  $('wsSort').onchange=e=>{wsS.sort=e.target.value;renderWs();};
+  $('wsMine').onchange=e=>{wsS.mine=e.target.checked;wsS.shown=24;renderWs();};
+  $('wsMore').onclick=()=>{wsS.shown+=24;renderWs();};
+  $('newWs').onclick=newWorkspace;
+  $('jbQ').oninput=e=>{jb.q=e.target.value.trim();jb.page=0;renderJb();};
+  $('jbRange').onchange=e=>{jb.range=e.target.value;jb.page=0;renderJb();};
+  $('jbStatus').onchange=e=>{jb.status=e.target.value;jb.page=0;renderJb();};
+  $('jbPipe').onchange=e=>{jb.pipeline=e.target.value;jb.page=0;renderJb();};
+  document.querySelectorAll('#jbHead th').forEach(th=>th.onclick=()=>{if(jb.sortK===th.dataset.k)jb.dir*=-1;else{jb.sortK=th.dataset.k;jb.dir=1;}renderJb();});
+  $('jbExport').onclick=()=>{
+    const q=jb.q.toLowerCase();
+    const rows=DATA[jb.range].jobs.filter(j=>(jb.status==='all'||j.status===jb.status)&&(jb.pipeline==='all'||j.pipeline===jb.pipeline)&&(!q||j.id.includes(q)||j.pipeline.toLowerCase().includes(q)));
+    const csv=['job_id,pipeline,workspace,started,duration_s,triggered_by,status',...rows.map(j=>[j.id,j.pipeline,j.ws,j.time.toISOString(),j.dur,j.trig,j.status].map(v=>`"${v}"`).join(','))].join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`jobs-${jb.range}.csv`;a.click();
+    toast(`Exported ${rows.length} jobs`);};
+  // "Create new" menu items now act on real views
+  const items=document.querySelectorAll('#createMenu button');
+  items[0].onclick=()=>go('pipelines');items[1].onclick=newWorkspace;items[3].onclick=()=>go('pipelines',{sched:true});
+}
+
+/* ================= INIT ================= */
+initViews();renderStats();setLine(successChart,'today','success');setLine(failedChart,'today','failed');setDonut('today');renderJobs();
+show((location.hash||'#/home').replace('#/',''));
+</script>
+</body>
+</html>
